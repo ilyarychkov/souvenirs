@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/favorites-style.css">
+    <link rel="stylesheet" href="/static/css/arts-astists-catalog-style.css">
+    <title>Избранное</title>
+</head>
+<body>
+    <header>
+        <div class="first-header-nav-block">
+            <p onclick="document.location='/'" style="color: white;">Магазин сувениров</p>
+            <div class="first-header-nav-links">
+                <a class="underlined-label-inverse S22" href="/arts-catalog">Товары</a>
+                <a class="underlined-label-inverse S22" href="/artists-catalog">Города</a>
+            </div>
+        </div>
+        <div class="second-header-nav-links">
+            {% if session.get('user_id') %}
+                <a href="/profile" class="underlined-label-inverse S22">Профиль</a>
+                <a href="/favorites" class="underlined-label-inverse S22">Избранное</a>
+                <a href="/cart" class="underlined-label-inverse S22">Корзина</a>
+            {% else %}
+                <a href="/login" class="underlined-label S22" id="headerEnterBtn">Войти</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="content">
+        <div class="content-fav-block">
+            <div class="fav-header">
+                <span class="S42 primary-text-dark">Избранное</span>
+                <span class="S16 primary-text-dark">{{ fav_arts|length }}</span> <!-- Количество товаров в избранном -->
+            </div>
+            <div class="arts-block">
+                {% for art in fav_arts %}
+                    <div class="art-card" onclick="document.location='/art?id={{ art[0] }}'">
+                        <div class="art-photo-block">
+                            <img src="data:image/jpeg;base64,{{ art[2] }}" alt=""> <!-- Изображение товара -->
+                            <div class="square1"></div>
+                            <div class="square2"></div>
+                            <div class="square3"></div>
+                            <div class="square4"></div>
+                        </div>
+                        <div class="art-card-info-block">
+                            <span class="S22">{{ art[1] }}</span> <!-- Название товара -->
+                            <div class="art-card-author-n-price">
+                                <span class="S16">{{ art[7] }}</span> <!-- Название магазина -->
+                                <div>
+                                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" clip-rule="evenodd" d="M0.666504 8.66659L7.99984 1.33325H14.6665V7.99992L7.33317 15.3333L0.666504 8.66659ZM10.3332 4.83325C10.3332 5.29349 10.7063 5.66659 11.1665 5.66659C11.6267 5.66659 11.9998 5.29349 11.9998 4.83325C11.9998 4.37301 11.6267 3.99992 11.1665 3.99992C10.7063 3.99992 10.3332 4.37301 10.3332 4.83325Z" fill="black"/>
+                                    </svg>
+                                    <span class="S16">{{ art[3] | format_price }} ₽</span> <!-- Цена -->                          
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="art-card">
+                        <span class="S22 primary-text-dark nofav">В избранном ничего нет</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <footer>
+        <div class="footer-nav-block">
+            <div class="first-footer-nav-links">
+                <a href="#" id='aboutUsBtn' class='underlined-label-inverse S22'>О нас</a>
+                <div id='aboutUsMessage' style='display:none; margin-top: 10px; color: white;'>
+                    Добро пожаловать в наш интернет-магазин, где каждый сувенир рассказывает историю! <br> Мы предлагаем уникальные товары из разных городов России, которые помогут подарить частичку этих мест вам или своим близким.
+                </div>
+
+        </div>
+        
+        </div>
+        <div class="footer-second-block">
+           
+            <span class="S22 secondary-text-light">© marketplace 2024</span>       
+        </div>
+    </footer>
+    <script>
+        document.getElementById('aboutUsBtn').addEventListener('click', function(event) {
+                event.preventDefault(); // Предотвращаем переход по ссылке
+                const messageDiv = document.getElementById('aboutUsMessage');
+                
+                // Переключаем видимость сообщения
+                if (messageDiv.style.display === 'none') {
+                    messageDiv.style.display = 'block';
+                } else {
+                    messageDiv.style.display = 'none';
+                }
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/arts-astists-catalog-style.css">
+    <link rel="stylesheet" href="/static/css/artist-style.css">
+    <title>{{ artist[1] }}</title>
+</head>
+<body>
+    <header>
+        <div class="first-header-nav-block">
+            <p onclick="document.location='/'" style="color: white;">Магазин сувениров</p>
+            <div class="first-header-nav-links">
+                <a class="underlined-label-inverse S22" href="/arts-catalog">Товары</a>
+                <a class="underlined-label-inverse S22" href="/artists-catalog">Города</a>
+            </div>
+        </div>
+        <div class="second-header-nav-links">
+            {% if session.get('user_id') %}
+                <a href="/profile" class="underlined-label-inverse S22">Профиль</a>
+                <a href="/favorites" class="underlined-label-inverse S22">Избранное</a>
+                <a href="/cart" class="underlined-label-inverse S22">Корзина</a>
+            {% else %}
+                <a href="/login" class="underlined-label S22" id="headerEnterBtn">Войти</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="content">
+        <div class="artist-main-block">
+            <img src="{{ artist[2] | b64encode }}" alt=""> <!-- Лого магазина -->
+            <div class="artist-info-block">
+                <div class="artist-name">
+                    <span class="S42 primary-text-dark">{{ artist[1] }}</span> <!-- Название магазина -->
+                    <span class="S16 primary-text-dark">{{ artist[3] }}</span> <!-- Год основания -->
+                </div>
+                <div class="artist-info">
+                    <div class="artist-bio">
+                        <span class="S22 primary-text-dark paragraph" id="bioText">{{ artist[4] }}</span> <!-- Описание магазина -->
+                        <span class="secondary-underlined-label underlined-label-inverse S22" style="cursor: pointer;" onclick="showBio()" id="bioMoreBtn">Читать дальше</span>
+                    </div>
+                    <!-- Темы магазина -->
+                    <!-- <div class="artist-badges"> 
+                        {% for theme in themes_list %}
+                            <div class="badge">{{ theme }}</div>
+                        {% endfor %}
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    
+        <div class="artist-works">
+            <div class="works-top">
+                <div class="works-title">
+                    <span class="S42 primary-text-dark">Товары</span>
+                    <span class="S16 primary-text-dark">{{ arts|length }}</span> <!-- Кол-во товаров -->
+                </div>
+                <a href="#" class="underlined-label primary-text-dark">Смотреть в каталоге</a>
+            </div>
+            <div class="arts-block">
+                {% for art in arts %}
+                    <div class="art-card" onclick="document.location='/art?id={{ art[0] }}'">
+                        <div class="art-photo-block">
+                            <img src="{{ art[2] | b64encode }}"> <!-- Преобразование BLOB в Base64 -->
+                            <div class="square1"></div>
+                            <div class="square2"></div>
+                            <div class="square3"></div>
+                            <div class="square4"></div>
+                        </div>
+                        <div class="art-card-info-block">
+                            <span class="S22">{{ art[1] }}</span>   <!-- Название товара -->
+                            <div class="art-card-author-n-price">
+                                <span class="S16">{{ artist[1] }}</span>   <!-- Название магазина -->
+                                <div>
+                                    <img src="/static/icons/price-tag.svg" alt="">
+                                    <span class="S16">{{ art[3] | format_price }} ₽</span>   <!-- Цена -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <div class="footer-nav-block">
+            <div class="first-footer-nav-links">
+                <a href="#" id='aboutUsBtn' class='underlined-label-inverse S22'>О нас</a>
+                <div id='aboutUsMessage' style='display:none; margin-top: 10px; color: white;'>
+                    Добро пожаловать в наш интернет-магазин, где каждый сувенир рассказывает историю! <br> Мы предлагаем уникальные товары из разных городов России, которые помогут подарить частичку этих мест вам или своим близким.
+                </div>
+            </div>
+            
+            </div>
+            <div class="footer-second-block">
+               
+                <span class="S22 secondary-text-light">© marketplace 2024</span>              
+        </div>
+    </footer>
+    <script>
+        document.getElementById('aboutUsBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+            const messageDiv = document.getElementById('aboutUsMessage');
+            
+            // Переключаем видимость сообщения
+            if (messageDiv.style.display === 'none') {
+                messageDiv.style.display = 'block';
+            } else {
+                messageDiv.style.display = 'none';
+            }
+        });
+    </script>
+    <script src="/static/js/clickElems.js"></script>
+</body>
+</html>

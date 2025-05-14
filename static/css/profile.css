@@ -1,0 +1,187 @@
+.content {
+    margin: 0;
+    padding: 153px 204px 128px 204px;
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    position: relative;
+}
+
+.profile-top {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.name-n-surname {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+}
+
+.my-data-form {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+
+.inputs-form {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.tab1-content {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    width: 576px;
+}
+
+.tab2-content {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+
+.order-card {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 254px;
+    gap: 48px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-disabled);
+}
+
+.order-card-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.order-card-footer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.order-num-n-state {
+    display: flex;
+    flex-direction: row;
+    gap: 24px;
+}
+
+.order-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 48px;
+}
+
+/* photo block */
+
+.art-photo-block {
+    cursor: pointer;
+    position: relative;
+    padding: 4px;
+    width: 264px;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+.art-photo-block img {
+    transition: 0.3s ease;
+    object-fit: contain;
+    transform: scale(2.6);
+    aspect-ratio: 1;
+    width: 100%;
+}
+
+.art-photo-block div {
+    background-color: var(--bg-primary-inverse);
+    width: 4px;
+    height: 4px;
+}
+
+.square1,
+.square2,
+.square3,
+.square4 {
+    transition: 0.3s ease-in-out;
+    opacity: 0;
+    position: absolute;
+}
+
+.square1 {
+    top: 0;
+    left: 0;
+}
+
+.square2 {
+    top: 0;
+    right: 0;
+}
+
+.square3 {
+    bottom: 0;
+    left: 0;
+}
+
+.square4 {
+    bottom: 0;
+    right: 0;
+}
+
+.art-photo-block:hover .square1,
+.art-photo-block:hover .square2,
+.art-photo-block:hover .square3,
+.art-photo-block:hover .square4 {
+    opacity: 100;
+}
+
+.art-photo-block:hover img {
+    transition: 0.3s ease;
+    object-fit: contain;
+    transform: scale(1);
+}
+
+/* photo block end */
+
+/* modal window */
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.passwordWindow {
+    display: none;
+    flex-direction: column;
+    gap: 64px;
+    padding: 48px;
+    width: 576px;
+    border-radius: 4px;
+    background-color: var(--bg-primary);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+}
+
+.overlay {
+    background-color: var(--bg-disabled-inverse);
+    display: none;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 150%;
+    z-index: 1;
+}
+
+.changePasswordBtns {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* modal window end */

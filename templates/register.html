@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/login-reg-style.css">
+    <title>Регистрация</title>
+</head>
+<body>
+    <header>
+        <div class="first-header-nav-block">
+            <p onclick="document.location='/'" style="color: white;">Магазин сувениров</p>
+            <div class="first-header-nav-links">
+                <a class="underlined-label-inverse S22" href="/arts-catalog">Товары</a>
+                <a class="underlined-label-inverse S22" href="/artists-catalog">Города</a>
+            </div>
+        </div>
+        <div class="second-header-nav-links">
+            {% if session.get('user_id') %}
+                <a href="/profile" class="underlined-label-inverse S22">Профиль</a>
+                <a href="/favorites" class="underlined-label-inverse S22">Избранное</a>
+                <a href="/cart" class="underlined-label-inverse S22">Корзина</a>
+            {% else %}
+                <a href="/login" class="underlined-label S22" id="headerEnterBtn">Войти</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="content">
+        <form class="form-block" id="fillForm" method="POST" action="/register">
+            <div class="form-head-block">
+                <div>
+                    <img src="/static/icons/arrow-left.svg" alt="">
+                    <a href="/login" class="underlined-label-inverse S22">Ко входу в аккаунт</a>
+                </div>
+                <span class="S42">Регистрация аккаунта</span>
+            </div>
+            <div class="form-inputs-block">
+                <div class="input-block">
+                    <span class="S16 secondary-text-dark">Ваше имя</span>
+                    <div class="input">
+                        <input type="text" id="NameInput" name="name" class="S22" placeholder="Имя" required>
+                    </div>
+                </div>
+                <div class="input-block">
+                    <span class="S16 secondary-text-dark">Ваша фамилия</span>
+                    <div class="input">
+                        <input type="text" id="SurnameInput" name="surname" class="S22" placeholder="Фамилия" required>
+                    </div>
+                </div>
+                <div class="input-block">
+                    <span class="S16 secondary-text-dark">E-mail</span>
+                    <div class="input">
+                        <input type="email" id="emailInput" name="email" class="S22" placeholder="E-mail" required>
+                    </div>
+                </div>
+                <div class="input-block">
+                    <span class="S16 secondary-text-dark">Пароль</span>
+                    <div class="input">
+                        <input id="passwordInput" name="password" type="password" class="S22" placeholder="Пароль" required>
+                        <div class="input-icn"><img id="passwordIcon" onclick="eyeIcon('passwordInput', this)" src="/static/icons/eye-slash.svg" alt=""></div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-enter-btn">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        <ul>
+                        {% for category, message in messages %}
+                            <li class="{{ category }}">{{ message }}</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                {% endwith %}
+                <button type="submit" class="text-btn" id="applyForm">Зарегистрироваться</button>
+                <span class="S16 secondary-text-dark">Нажимая кнопку, вы принимаете нашу <a href="#" class="secondary-underlined-label underlined-label-inverse S16">Политику конфиденциальности</a></span>
+            </div>
+        </form>        
+    </div>
+    <footer>
+        <div class="footer-nav-block">
+            <div class="first-footer-nav-links">
+                <a href="#" id='aboutUsBtn' class='underlined-label-inverse S22'>О нас</a>
+                <div id='aboutUsMessage' style='display:none; margin-top: 10px; color: white;'>
+                    Добро пожаловать в наш интернет-магазин, где каждый сувенир рассказывает историю! <br> Мы предлагаем уникальные товары из разных городов России, которые помогут подарить частичку этих мест вам или своим близким.
+                </div>
+            </div>
+           
+        </div>
+        <div class="footer-second-block">
+            
+            <span class="S22 secondary-text-light">© marketplace 2024</span>      
+        </div>
+    </footer>
+    <script src="/static/js/input-icon.js"></script>
+    <script src="/static/js/block-btn.js"></script>
+    <script>document.getElementById('aboutUsBtn').addEventListener('click', function(event) {
+        event.preventDefault(); // Предотвращаем переход по ссылке
+        const messageDiv = document.getElementById('aboutUsMessage');
+        
+        // Переключаем видимость сообщения
+        if (messageDiv.style.display === 'none') {
+            messageDiv.style.display = 'block';
+        } else {
+            messageDiv.style.display = 'none';
+        }
+    });
+    </script>
+</body>
+</html>

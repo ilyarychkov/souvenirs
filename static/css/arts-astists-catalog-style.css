@@ -1,0 +1,265 @@
+.content {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+}
+
+.sort-block {
+    width: 264px;
+    margin-top: 209px;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    gap: 64px;
+}
+
+.reset-btn {
+    display: none;
+}
+
+.sort-part {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.checkbox-block {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.extra-filters {
+    display: none;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.content-block {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    flex-grow: 1;
+}
+
+.content-block-head {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.sort-catalog-block {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+}
+
+.sort-block span {
+    cursor: pointer;
+}
+
+/* arts */
+
+.arts-block {
+    background-color: white;
+    padding: 4px;
+    border-radius: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    row-gap: 96px;
+    column-gap: 48px;
+    margin-bottom: 30px;
+    padding-bottom: 30px;
+}
+
+.art-card {
+    transition: 0.3s ease;
+    display: flex;
+    cursor: pointer;
+    position: relative;
+    flex-direction: row;
+    width: 722px;
+    height: fit-content;
+    gap: 48px;
+    align-items: end;
+}
+
+.art-card:hover .art-photo-block img {
+    transform: scale(1);
+}
+
+.art-card:hover .square1,
+.art-card:hover .square2,
+.art-card:hover .square3,
+.art-card:hover .square4 {
+    opacity: 100;
+}
+
+.art-photo-block {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    width: 65%;
+    padding-bottom: 0;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+}
+
+.art-photo-block img {
+    transition: 0.3s ease;
+    
+    /* transform: scale(2.6); */
+    aspect-ratio: 1;
+    width: 100%;
+    border-radius: 8px;
+    object-fit: contain;
+}
+
+.art-photo-block div {
+    background-color: var(--bg-primary-inverse);
+    width: 4px;
+    height: 4px;
+}
+
+.square1,
+.square2,
+.square3,
+.square4 {
+    transition: 0.3s ease-in-out;
+    opacity: 0;
+    position: absolute;
+}
+
+.square1 {
+    top: 0;
+    left: 0;
+}
+
+.square2 {
+    top: 0;
+    right: 0;
+}
+
+.square3 {
+    bottom: 0;
+    left: 0;
+}
+
+.square4 {
+    bottom: 0;
+    right: 0;
+}
+
+.art-card-info-block {
+    padding: 4px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 35%;
+}
+
+.art-card-author-n-price {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.art-card-author-n-price div {
+    display: flex;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+}
+
+.art-card-author-n-price div img {
+    width: 16px;
+    height: 16px;
+}
+
+/* artists */
+
+.artists-block {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+}
+
+.artist-card {
+    cursor: pointer;
+    transition: 0.3s ease;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 48px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--border-disabled);
+}
+
+.artist-card:hover {
+    border-bottom: 1px solid var(--border-primary);
+}
+
+.artist-card-info {
+    display: flex;
+    flex-direction: row;
+    width: 50%;
+    gap: 64px;
+}
+
+.artist-card-name {
+    display: flex;
+    flex-direction: row;
+    gap: 32px;
+    width: 532px;
+}
+
+.artist-card-name div {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 4px 0;
+    width: 50%;
+}
+
+.artist-card-name img {
+    object-fit: contain;
+    aspect-ratio: 1;
+    height: 108px;
+    width: 108px;
+    border-radius: 4px;
+}
+
+.artist-card-info-badges {
+    width: 50%;
+    height: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    gap: 8px;
+}
+
+.artist-card-arts {
+    width: fit-content;
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.artist-card-arts .art-photo-block {
+    width: 128px;
+}
+
+.artist-card-arts .art-photo-block:hover .square1,
+.artist-card-arts .art-photo-block:hover .square2,
+.artist-card-arts .art-photo-block:hover .square3,
+.artist-card-arts .art-photo-block:hover .square4 {
+    opacity: 100;
+}
+
+.artist-card-arts .art-photo-block:hover img {
+    transition: 0.3s ease;
+    object-fit: cover;
+    /* transform: scale(1); */
+}

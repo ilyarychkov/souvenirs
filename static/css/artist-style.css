@@ -1,0 +1,82 @@
+.content {
+    flex-direction: column;
+    gap: 96px;
+    margin: 153px 204px 128px 204px;
+}
+
+.artist-main-block {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+    width: 100%;
+}
+
+.artist-main-block img {
+    height: 264px;
+    width: 264px;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.artist-info-block {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+    height: fit-content;
+    width: 100%;
+    padding-top: 24px;
+}
+
+.artist-name {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}
+
+.artist-info {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+}
+
+.artist-bio {
+    width: 70%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.artist-bio span {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.artist-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 30%;
+    height: fit-content;
+}
+
+.artist-works {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+}
+
+.works-top {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.works-title {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+}

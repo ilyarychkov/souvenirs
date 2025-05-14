@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/art-style.css">
+    <title>{{ art[1] }}</title>
+</head>
+<body>
+    <header>
+        <div class="first-header-nav-block">
+            <p onclick="document.location='/'" style="color: white;">Магазин сувениров</p>
+            <div class="first-header-nav-links">
+                <a class="underlined-label-inverse S22" href="/arts-catalog">Товары</a>
+                <a class="underlined-label-inverse S22" href="/artists-catalog">Города</a>
+            </div>
+        </div>
+        <div class="second-header-nav-links">
+            {% if session.get('user_id') %}
+                <a href="/profile" class="underlined-label-inverse S22">Профиль</a>
+                <a href="/favorites" class="underlined-label-inverse S22">Избранное</a>
+                <a href="/cart" class="underlined-label-inverse S22">Корзина</a>
+            {% else %}
+                <a href="/login" class="underlined-label S22" id="headerEnterBtn">Войти</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="content">
+        <div class="art-block">
+            <div class="art-image-block">
+                <img src="data:image/jpeg;base64,{{ art[2] }}" alt="Изображение картины">
+            </div>
+            <div class="art-info-block">
+                <div class="art-name-n-author">
+                    <span class="S42">{{ art[1] }}</span> 
+                    <a href="#" class="underlined-label S22" onclick="document.location='/artist?id={{ artist[0] }}'">{{ art[7] }}</a> 
+                </div>
+                <div class="art-themes"> 
+                    {% for theme in themes %}
+                        <div class="badge">{{ theme }}</div>
+                    {% endfor %}
+                </div>          
+                <div class="order-block">
+                    <div class="price">
+                        <img src="/static/icons/price-tag.svg" alt="">
+                        <span class="S22">{{ art[3] | format_price }} ₽</span>  
+                    </div>
+                    <div class="buy-btns">
+                        <button class="text-btn" id="addToCartBtn" data-art-id="{{ art[0] }}">
+                            {% if in_cart %}
+                                Перейти в корзину
+                            {% else %}
+                                Добавить в корзину
+                            {% endif %}
+                        </button>                       
+                        <button class="add-fav-btn" id="addToFavBtn" data-art-id="{{ art_id }}">
+                            {% if is_favorite %}
+                                <img src="/static/icons/heart-filled.svg" alt="">
+                            {% else %}
+                                <img src="/static/icons/heart-outline.svg" alt="">
+                            {% endif %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="art-description">
+            <span class="S42">О сувенире</span>
+            <div class="description-block">
+                <div class="descr-elem">
+                    <span class="secondary-text-dark S22">Год</span>
+                    <span class="primary-text-dark S22">{{ art[8] }}</span> 
+                </div>
+                
+                <div class="descr-elem">
+                    <span class="secondary-text-dark S22">Стоимость</span>
+                    <span class="primary-text-dark S22">{{ art[3] | format_price }} ₽</span> 
+                </div>
+                
+            </div>
+        </div>     
+        <div class="author-block">
+            <span class="S42 primary-text-dark">Город</span>
+            <div class="artist-card">
+                <div class="artist-card-info" onclick="document.location='/artist?id={{ artist[0] }}'">
+                    <div class="artist-card-name">
+                        <img src="data:image/jpeg;base64,{{ artist[2] }}" alt=""> 
+                        <div>
+                            <span class="S22 primary-text-dark">{{ artist[1] }}</span> 
+                            <span class="S16 secondary-text-dark">Всего товаров: {{ author_count }}</span> 
+                        </div>
+                    </div>
+                    <div class="artist-card-info-badges">
+                        {% for badge in author_themes %}
+                            <div class="badge">{{ badge }}</div> 
+                        {% endfor %}
+                        {% if additional_themes_count > 0 %}
+                            <div class="badge">+{{ additional_themes_count }}</div> 
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="artist-card-arts">
+                    <!-- Товары магазина -->
+                    {% for art_item in author_arts %}
+                        <div class="art-photo-block" onclick="document.location='/art?id={{ art_item.id }}'">
+                            <img src="data:image/jpeg;base64,{{ art_item.photo }}" alt=""> 
+                            <div class="square1"></div>
+                            <div class="square2"></div>
+                            <div class="square3"></div>
+                            <div class="square4"></div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>   
+        </div>         
+    </div>
+    <footer>
+        <div class="footer-nav-block">
+            <div class="first-footer-nav-links">
+                <a href="#" id='aboutUsBtn' class='underlined-label-inverse S22'>О нас</a>
+                <div id='aboutUsMessage' style='display:none; margin-top: 10px; color: white;'>
+                    Добро пожаловать в наш интернет-магазин, где каждый сувенир рассказывает историю! <br> Мы предлагаем уникальные товары из разных городов России, которые помогут подарить частичку этих мест вам или своим близким.
+                </div>
+            </div>
+            
+        </div>
+        <div class="footer-second-block">
+            
+            <span class="S22 secondary-text-light">© marketplace 2024</span>            
+        </div>
+    </footer>      
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const addToCartBtn = document.getElementById('addToCartBtn');
+            const artId = addToCartBtn.getAttribute('data-art-id');
+            const addToFavBtn = document.getElementById('addToFavBtn');
+
+            addToCartBtn.onclick = function () {
+                addArtToCart().then(() => {
+                    document.location = `/art?id=${artId}`;
+                });
+            };
+
+            function addArtToCart() {
+                return fetch(`/api/cart/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ artId: artId })
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Ошибка при добавлении в корзину");
+                        }
+                        return response.json();
+                    })
+                    .catch(error => {
+                        console.error('Ошибка:', error);
+                    });
+            }
+
+            addToFavBtn.onclick = function () {
+                addToFav().then(data => {
+                    if (data.message === "Item added to favorites") {
+                        // Изменяем иконку на заполненное сердце
+                        this.innerHTML = '<img src="/static/icons/heart-filled.svg" alt="">';
+                    } else if (data.message === "Item deleted from favorites") {
+                        // Изменяем иконку на outline
+                        this.innerHTML = '<img src="/static/icons/heart-outline.svg" alt="">';
+                    }
+                }).catch(error => {
+                    console.error('Ошибка:', error);
+                });
+            }
+
+            function addToFav() {
+                return fetch(`/api/favorites/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ artId: artId }) // Передаем artId в теле запроса
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Ошибка при добавлении/удалении из избранного");
+                    }
+                    return response.json();
+                });
+            }
+        });
+
+        // Обработчик события для кнопки добавления в корзину
+        addToCartBtn.addEventListener('click', function() {
+            const artId = this.getAttribute('data-art-id');
+            const buttonText = this.textContent.trim(); // Получаем текст кнопки
+
+            if (buttonText === 'Перейти в корзину') {
+                // Если текст кнопки "Перейти в корзину", перенаправляем на страницу корзины
+                window.location.href = '/cart'; // URL для страницы корзины
+            } else {
+                // Если текст кнопки "Добавить в корзину"
+                fetch('/add_to_cart', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ art_id: artId })
+                })
+                .then(response => {
+                    this.textContent = 'Перейти в корзину'; // Меняем текст кнопки на "Перейти в корзину"
+                    location.reload();
+                })
+            }
+        });
+        document.getElementById('aboutUsBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+            const messageDiv = document.getElementById('aboutUsMessage');
+            
+            // Переключаем видимость сообщения
+            if (messageDiv.style.display === 'none') {
+                messageDiv.style.display = 'block';
+            } else {
+                messageDiv.style.display = 'none';
+            }
+        });
+    </script> 
+</body>
+</html>

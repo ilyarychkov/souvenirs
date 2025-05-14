@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/arts-astists-catalog-style.css">
+    <title>Товары</title>
+</head>
+<body>
+    <header>
+        <div class="first-header-nav-block">
+            <p onclick="document.location='/'" style="color: white;">Магазин сувениров</p>
+            <div class="first-header-nav-links">
+                <a class="underlined-label-inverse S22" href="/arts-catalog">Товары</a>
+                <a class="underlined-label-inverse S22" href="/artists-catalog">Города</a>
+            </div>
+        </div>
+        <div class="second-header-nav-links">
+            {% if session.get('user_id') %}
+                <a href="/profile" class="underlined-label-inverse S22">Профиль</a>
+                <a href="/favorites" class="underlined-label-inverse S22">Избранное</a>
+                <a href="/cart" class="underlined-label-inverse S22">Корзина</a>
+            {% else %}
+                <a href="/login" class="underlined-label S22" id="headerEnterBtn">Войти</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="content">
+        {% with messages = get_flashed_messages(with_categories=True) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="S22 alert alert-{{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <div class="content-block">
+            <div class="content-block-head">
+                <span class="S42">Каталог товаров</span>
+                <div class="sort-catalog-block">
+                    <select onchange="sortCatalog(this.value)">
+                        <option class="S22 primary-text-dark" value="popular" {{ 'selected' if sort_type == 'popular' else '' }}>По популярности</option>
+                        <option class="S22 primary-text-dark" value="price-acs" {{ 'selected' if sort_type == 'price-acs' else '' }}>По возрастанию цены</option>
+                        <option class="S22 primary-text-dark" value="price-desc" {{ 'selected' if sort_type == 'price-desc' else '' }}>По убыванию цены</option>
+                        <option class="S22 primary-text-dark" value="new-to-old" {{ 'selected' if sort_type == 'new-to-old' else '' }}>От нового к старому</option>
+                        <option class="S22 primary-text-dark" value="old-to-new" {{ 'selected' if sort_type == 'old-to-new' else '' }}>От старого к новому</option>
+                    </select>
+                    <div class="input">
+                        <input type="text" id="searchInput" class="S22" placeholder="Название товара" oninput="filterCatalog(this.value)" value="{{ name_filter }}">
+                        <div class="input-icn"><img src="/static/icons/search.svg" alt=""></div>
+                    </div>
+                </div>
+            </div>            
+            <div class="arts-block" id="artsBlock">
+                {% for art in arts %}
+                <div class="art-card" onclick="document.location='/art?id={{ art[0] }}'">
+                    <div class="art-photo-block">
+                        <img src="{{ art[2] | b64encode }}"> <!-- Преобразование BLOB в Base64 -->
+                        <div class="square1"></div>
+                        <div class="square2"></div>
+                        <div class="square3"></div>
+                        <div class="square4"></div>
+                    </div>
+                    <div class="art-card-info-block">
+                        <span class="S22 art-title">{{ art[1] }}</span>   <!-- Название товара -->
+                        <div class="art-card-author-n-price">
+                            <span class="S16">{{ art[6] }}</span>   <!-- Название магазина -->
+                            <div>
+                                <img src="/static/icons/price-tag.svg" alt="">
+                                <span class="S16">{{ art[3] | format_price }} ₽</span>   <!-- Цена -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>                    
+        </div>
+    </div>
+    <footer>
+        <div class="footer-nav-block">
+            <div class="first-footer-nav-links">
+                <a href="#" id='aboutUsBtn' class='underlined-label-inverse S22'>О нас</a>
+                <div id='aboutUsMessage' style='display:none; margin-top: 10px; color: white;'>
+                    Добро пожаловать в наш интернет-магазин, где каждый сувенир рассказывает историю! <br> Мы предлагаем уникальные товары из разных городов России, которые помогут подарить частичку этих мест вам или своим близким.
+                </div>
+            </div>
+            
+        </div>
+        <div class="footer-second-block">
+            
+            <span class="S22 secondary-text-light">© marketplace 2024</span>             
+        </div>
+    </footer>
+    <script src="/static/js/filters.js"></script>
+    <script src="/static/js/loader.js"></script>
+    <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                // Находим все сообщения
+                const alerts = document.querySelectorAll('.flash-messages .alert');
+                alerts.forEach(function(alert) {
+                    // Устанавливаем таймер для скрытия
+                    setTimeout(function() {
+                        alert.style.opacity = '0'; // Анимация исчезновения
+                        setTimeout(function() {
+                            alert.remove(); // Удаляем элемент из DOM после анимации
+                        }, 300); // задержка для плавного исчезновения
+                    }, 3000); // 3 секунды
+                });
+
+                const filters = document.querySelectorAll('.sort-part input[type="text"], .sort-part input[type="number"], .sort-part input[type="checkbox"]');
+                const resetButton = document.getElementById('resetButton');
+    
+                filters.forEach(filter => {
+                    filter.addEventListener('change', () => {
+                        const anyChecked = [...filters].some(input => (input.type === 'checkbox' && input.checked) || (input.value !== ''));
+                        resetButton.style.display = anyChecked ? 'inline' : 'none';
+                    });
+                });
+            });
+            document.getElementById('aboutUsBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+            const messageDiv = document.getElementById('aboutUsMessage');
+            
+            // Переключаем видимость сообщения
+            if (messageDiv.style.display === 'none') {
+                messageDiv.style.display = 'block';
+            } else {
+                messageDiv.style.display = 'none';
+            }
+        }); 
+        function filterCatalog(searchTerm) {
+    const arts = document.querySelectorAll('.art-card');
+    searchTerm = searchTerm.toLowerCase();
+    arts.forEach(art => {
+      const title = art.querySelector('.art-title').innerText.toLowerCase();
+      if (title.includes(searchTerm)) {
+        art.style.display = '';} else {
+        art.style.display = 'none';
+      }
+    });
+  }
+        
+
+    </script>
+</body>
+</html>

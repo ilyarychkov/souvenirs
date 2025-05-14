@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/arts-astists-catalog-style.css">
+    <title>Города</title>
+</head>
+<body>
+    <header>
+        <div class="first-header-nav-block">
+            <p onclick="document.location='/'" style="color: white;">Магазин сувениров</p>
+            <div class="first-header-nav-links">
+                <a class="underlined-label-inverse S22" href="/arts-catalog">Товары</a>
+                <a class="underlined-label-inverse S22" href="/artists-catalog">Города</a>
+            </div>
+        </div>
+        <div class="second-header-nav-links">
+            {% if session.get('user_id') %}
+                <a href="/profile" class="underlined-label-inverse S22">Профиль</a>
+                <a href="/favorites" class="underlined-label-inverse S22">Избранное</a>
+                <a href="/cart" class="underlined-label-inverse S22">Корзина</a>
+            {% else %}
+                <a href="/login" class="underlined-label S22" id="headerEnterBtn">Войти</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="content">
+       
+        <div class="content-block">
+            <div class="content-block-head">
+                <span class="S42">Магазины</span> 
+                <div class="sort-catalog-block">
+                    <div class="input">
+                        <input type="text" name="artist_name" class="S22" placeholder="Название магазина">
+                        <div class="input-icn"><img src="/static/icons/search.svg" alt=""></div>
+                    </div>
+                </div>                
+            </div>
+            <div class="artists-block">
+                {% for artist in artists %}
+                <div class="artist-card">
+                    <div class="artist-card-info" onclick="document.location='/artist?id={{ artist.artist_id }}'">
+                        <div class="artist-card-name">
+                            <img src="{{ artist.artist_photo | b64encode }}" alt=""> <!-- Лого -->
+                            <div>
+                                <span class="S22 primary-text-dark">{{ artist.artist_name }}</span> <!-- Название магазина -->
+                                <span class="S16 secondary-text-dark">Всего товаров: {{ artist.artwork_count }}</span> <!-- Кол-во товаров -->
+                            </div>
+                        </div>
+                        <div class="artist-card-info-badges">
+                            {% for theme in artist.themes %}
+                                <div class="badge">{{ theme }}</div> <!-- Темы товаров -->
+                            {% endfor %}
+                            {% if artist.remaining_themes_count > 0 %}
+                                <div class="badge">+{{ artist.remaining_themes_count }}</div> <!-- Сколько еще тем есть -->
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="artist-card-arts">
+                        {% for artwork in artist.artworks %} <!-- Товары магазина -->
+                        <div class="art-photo-block" onclick="document.location='/art?id={{ artwork[0] }}'">
+                            <img src="{{ artwork[2] | b64encode }}" alt="">
+                            <div class="square1"></div>
+                            <div class="square2"></div>
+                            <div class="square3"></div>
+                            <div class="square4"></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>            
+        </div>
+    </div>
+    <footer>
+        <div class="footer-nav-block">
+            <div class="first-footer-nav-links">
+                <a href="#" id='aboutUsBtn' class='underlined-label-inverse S22'>О нас</a>
+                <div id='aboutUsMessage' style='display:none; margin-top: 10px; color: white;'>
+                    Добро пожаловать в наш интернет-магазин, где каждый сувенир рассказывает историю! <br> Мы предлагаем уникальные товары из разных городов России, которые помогут подарить частичку этих мест вам или своим близким.
+                </div>
+            </div>
+            
+        </div>
+        <div class="footer-second-block">
+           
+            <span class="S22 secondary-text-light">© marketplace 2024</span>            
+        </div>
+    </footer>
+    <script>
+        document.getElementById('aboutUsBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+            const messageDiv = document.getElementById('aboutUsMessage');
+            
+            // Переключаем видимость сообщения
+            if (messageDiv.style.display === 'none') {
+                messageDiv.style.display = 'block';
+            } else {
+                messageDiv.style.display = 'none';
+            }
+        });
+        document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.querySelector('input[name="artist_name"]');
+        const artistCards = document.querySelectorAll('.artist-card');
+
+        searchInput.addEventListener('input', function() {
+            const searchTerm = searchInput.value.toLowerCase();
+
+            artistCards.forEach(card => {
+                const artistName = card.querySelector('.artist-card-name span.primary-text-dark').textContent.toLowerCase();
+                
+                // Проверяем, содержит ли имя художника искомый текст
+                if (artistName.includes(searchTerm)) {
+                    card.style.display = ''; // Показываем карточку
+                } else {
+                    card.style.display = 'none'; // Скрываем карточку
+                }
+            });
+        });
+    });
+    </script>
+    <script src="/static/js/filters.js"></script>
+</body>
+</html>

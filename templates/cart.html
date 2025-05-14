@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="/static/1.jpg" type="image/x-icon">
+    <link rel="stylesheet" href="/static/css/main-style.css">
+    <link rel="stylesheet" href="/static/css/cart-style.css">
+    <title>Корзина</title>
+</head>
+<body>
+    <header>
+        <div class="first-header-nav-block">
+            <p onclick="document.location='/'" style="color: white;">Магазин сувениров</p>
+            <div class="first-header-nav-links">
+                <a class="underlined-label-inverse S22" href="/arts-catalog">Товары</a>
+                <a class="underlined-label-inverse S22" href="/artists-catalog">Города</a>
+            </div>
+        </div>
+        <div class="second-header-nav-links">
+            {% if session.get('user_id') %}
+                <a href="/profile" class="underlined-label-inverse S22">Профиль</a>
+                <a href="/favorites" class="underlined-label-inverse S22">Избранное</a>
+                <a href="/cart" class="underlined-label-inverse S22">Корзина</a>
+            {% else %}
+                <a href="/login" class="underlined-label S22" id="headerEnterBtn">Войти</a>
+            {% endif %}
+        </div>
+    </header>
+    <div class="content">
+        <div class="prods-block">
+            <div class="prods-label">
+                <span class="S42 primary-text-dark">Корзина</span>
+                <span class="S16 primary-text-dark" id="prodsQuantity">{{ cart_arts|length }}</span> <!-- Кол-во товаров в корзине -->
+            </div>
+            <div class="prods">
+                {% for art in cart_arts %}
+                    <div class="prod-card">
+                        <div class="art-photo-block" onclick="document.location='/art?id={{ art[0] }}'">
+                            <img src="data:image/jpeg;base64,{{ art[3] }}" alt=""> <!-- Используем строку Base64 -->
+                            <div class="square1"></div>
+                            <div class="square2"></div>
+                            <div class="square3"></div>
+                            <div class="square4"></div>
+                        </div>
+                        <div class="prod-info">
+                            <div class="prod-name-n-price">
+                                <span class="S16 primary-text-dark">{{ art[1] }}</span> <!-- Название товара -->
+                                <div class="price">
+                                    <img src="/static/icons/price-tag.svg" alt="">
+                                    <span class="S22 primary-text-dark" id="art-price">{{ art[2] | format_price }} ₽</span> <!-- Цена товара --> 
+                                </div>
+                            </div>
+                            <div class="delete-btn" onclick="deleteFromCart({{ art[0] }})">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.46967 15.9697L10.9393 13.5L8.46967 11.0303L9.53032 9.96967L12 12.4393L14.4697 9.96967L15.5303 11.0303L13.0607 13.5L15.5303 15.9697L14.4697 17.0303L12 14.5607L9.53032 17.0303L8.46967 15.9697Z" fill="black"/>
+                                    <path fill-rule="evenodd" clip-rule="evenodd" d="M16.5 5V3.5C16.5 2.39543 15.6046 1.5 14.5 1.5H9.5C8.39543 1.5 7.5 2.39543 7.5 3.5V5H2V6.5H4.08824L5 22H19L19.9118 6.5H22V5H16.5ZM15 3.5C15 3.22386 14.7761 3 14.5 3H9.5C9.22386 3 9 3.22386 9 3.5V5H15V3.5ZM18.4092 6.5H5.59083L6.41436 20.5H17.5856L18.4092 6.5Z" fill="black"/>
+                                </svg>            
+                                <span class="S16">Убрать</span>                    
+                            </div>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="prod-card">
+                        <span class="S16 primary-text-dark">Корзина пуста</span>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <form class="cart-form" action="{{ url_for('cart') }}" method="POST">
+            <span class="S42 primary-text-dark">Оформление</span>
+            <div class="cart-inputs">
+                <div class="input-block">
+                    <span class="S16 secondary-text-dark">Адрес доставки</span>
+                    <div class="input">
+                        <input type="address" name="delivery_address" class="S22" placeholder="Куда привезти" required>
+                    </div>
+                </div>
+                <div class="input-block">
+                    <span class="S16 secondary-text-dark">Ваш телефон</span>
+                    <div class="input">
+                        <input type="text" name="user_phone" class="S22" placeholder="+7 (___) ___ __-__" required>
+                    </div>
+                </div>
+            </div>
+            <div class="apply-order">
+                <div class="order-price">
+                    <span class="S22 primary-text-dark">К оплате:</span>
+                    <span class="S22 primary-text-dark" id="total-price">{{ total_price | format_price }} ₽</span> <!-- Итоговая стоимость заказа -->
+                </div>
+                <button type="submit" class="text-btn">Оформить заказ</button>
+                <span class="S16 secondary-text-dark">Нажимая кнопку, вы принимаете условия <a href="#" class="secondary-underlined-label underlined-label-inverse S16">Публичной оферты</a></span>
+            </div>
+        </form>
+    </div>    
+    <footer>
+        <div class="footer-nav-block">
+            <div class="first-footer-nav-links">
+                <a href="#" id='aboutUsBtn' class='underlined-label-inverse S22'>О нас</a>
+                <div id='aboutUsMessage' style='display:none; margin-top: 10px; color: white;'>
+                    Добро пожаловать в наш интернет-магазин, где каждый сувенир рассказывает историю! <br> Мы предлагаем уникальные товары из разных городов России, которые помогут подарить частичку этих мест вам или своим близким.
+                </div>
+            </div>
+            
+        </div>
+        <div class="footer-second-block">
+            
+            <span class="S22 secondary-text-light">© marketplace 2024</span>     
+        </div>
+    </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const cartItems = document.querySelector('#prodsQuantity');
+            const orderButton = document.querySelector('.text-btn'); // Находим кнопку оформления заказа
+
+            if (cartItems.textContent == 0) {
+                orderButton.disabled = true; // Отключаем кнопку, если корзина пуста
+            } else {
+                orderButton.disabled = false; // Включаем кнопку, если в корзине есть товары
+            }
+        });
+
+        function deleteFromCart(artId) {
+            fetch(`/cart/delete/${artId}`, {
+                method: 'POST',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка удаления товара из корзины');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Удаляем элемент из DOM
+                    const productCard = document.querySelector(`.prod-card[data-art-id="${artId}"]`);
+                    if (productCard) {
+                        productCard.remove(); // Удаляем элемент
+                    }
+                    
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Ошибка:', error);
+            });
+        }
+        document.getElementById('aboutUsBtn').addEventListener('click', function(event) {
+            event.preventDefault(); // Предотвращаем переход по ссылке
+            const messageDiv = document.getElementById('aboutUsMessage');
+            
+            // Переключаем видимость сообщения
+            if (messageDiv.style.display === 'none') {
+                messageDiv.style.display = 'block';
+            } else {
+                messageDiv.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

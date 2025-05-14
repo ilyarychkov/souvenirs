@@ -1,0 +1,212 @@
+html, body {
+    height: 100%;
+}
+
+.content {
+    background-color: white;
+    display: flex;
+    gap: 96px;
+    border-radius: 20px;
+    padding: 20px;
+    flex-direction: column;
+    margin: 61px 4px 128px 4px;
+    position: relative;
+}
+
+.banner {
+    border-radius: 48px;
+    height: 100%;
+    overflow: hidden;
+    position: relative;
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    backdrop-filter: var(--bg-accent);
+}
+
+.banner-content {
+    width: 100%;
+    height: 100%;
+    background-color: var(--bg-secondary-hover-inverse);
+    padding: 48px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.banner-logo {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.banner-art-name {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.banner-content-bottom {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: end;
+}
+
+.banner-links {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 96px;
+    padding: 0 44px 0 44px;
+}
+
+.popular-arts-block {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    width: 100%;
+}
+
+.arts-block-top {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    align-items: end;
+}
+
+.popular-arts-block-arts {
+    display: flex;
+    flex-direction: row;
+    gap: 48px;
+}
+
+.art-card-new {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    flex: 0 0 calc(25% - 48px);
+    max-width: 420px;
+    height: 100%;
+    align-items: center;
+}
+
+.popular-arts-block-arts .art-card-new {
+    flex: 1 1 calc(25% - 48px);
+}
+
+.art-card-new-info-block {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.art-card-new span, a {
+    width: fit-content;
+}
+
+.rec-arts-block {
+    display: flex;
+    flex-direction: column;
+    gap: 64px;
+    width: 100%;
+}
+
+.rec-arts-block-arts {
+    display: flex;
+    flex-direction: row;
+    row-gap: 48px;
+    column-gap: 64px;
+    flex-wrap: wrap;
+}
+
+.catalog-btn {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    align-items: center;
+
+    span {
+        width: fit-content;
+    }
+
+    button {
+        width: fit-content;
+    }
+}
+
+/* photo block */
+
+.art-photo-block {
+    cursor: pointer;
+    position: relative;
+    padding: 4px;
+    width: 100%;
+    padding-bottom: 0;
+    overflow: hidden;
+}
+
+.art-photo-block img {
+    transition: 0.3s ease;
+    object-fit: cover;
+    /* transform: scale(2.6); */
+    aspect-ratio: 1;
+    width: 100%;
+}
+
+.art-photo-block div {
+    background-color: var(--bg-primary-inverse);
+    width: 4px;
+    height: 4px;
+}
+
+.square1,
+.square2,
+.square3,
+.square4 {
+    transition: 0.3s ease-in-out;
+    opacity: 0;
+    position: absolute;
+}
+
+.square1 {
+    top: 0;
+    left: 0;
+}
+
+.square2 {
+    top: 0;
+    right: 0;
+}
+
+.square3 {
+    bottom: 0;
+    left: 0;
+}
+
+.square4 {
+    bottom: 0;
+    right: 0;
+}
+
+.art-photo-block:hover .square1,
+.art-photo-block:hover .square2,
+.art-photo-block:hover .square3,
+.art-photo-block:hover .square4 {
+    opacity: 100;
+}
+
+.art-photo-block:hover img {
+    transition: 0.3s ease;
+    object-fit: cover;
+    /* transform: scale(1); */
+}
+
+/* photo block end */
