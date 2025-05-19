@@ -1,5 +1,8 @@
 import sqlite3
+import os
 
+# Определяем базовую директорию проекта
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Инициализация БД
 def init_db():
@@ -20,7 +23,7 @@ def init_db():
             Description TEXT,
             Sold BOOLEAN,
             Framing TEXT NOT NULL,
-            FOREIGN KEY (Artist_ID) REFERENCES Artists(Artist_ID)
+            FOREIGN KEY (Artist_ID) REFERENCES Artists(Artist_ID),
             FOREIGN KEY (Technique) REFERENCES Techniques(Technique_ID)
         )
     ''')          
@@ -43,21 +46,21 @@ def init_db():
             ArtistPhoto BLOB NOT NULL,
             Birth_year INT,
             Bio TEXT
-        );
+        )
     ''')
 
     c.execute('''              
         CREATE TABLE IF NOT EXISTS Techniques (
             Technique_ID INT PRIMARY KEY,
             Name TEXT NOT NULL
-        );
+        )
     ''')
 
     c.execute('''  
         CREATE TABLE IF NOT EXISTS Themes (
             Theme_ID INT PRIMARY KEY,
             Name TEXT NOT NULL
-        );
+        )
     ''')
 
     c.execute('''              
@@ -66,18 +69,16 @@ def init_db():
             Art_ID INT,
             Theme_ID INT,
             FOREIGN KEY (Art_ID) REFERENCES Arts(Art_ID),
-            FOREIGN KEY (Theme_ID) REFERENCES themes(Theme_ID)
-        );
+            FOREIGN KEY (Theme_ID) REFERENCES Themes(Theme_ID)
+        )
     ''')
-
-
 
     c.execute('''
         CREATE TABLE IF NOT EXISTS Cart (
             Cart_ID INTEGER PRIMARY KEY AUTOINCREMENT,
             User_ID INT,
             FOREIGN KEY (User_id) REFERENCES Users(User_ID)
-        );
+        )
     ''')
 
     c.execute('''
@@ -87,7 +88,7 @@ def init_db():
             Art_ID INT,
             FOREIGN KEY (Cart_ID) REFERENCES Cart(Cart_ID),
             FOREIGN KEY (Art_ID) REFERENCES Arts(Art_ID)
-        );
+        )
     ''')
 
     c.execute('''
@@ -97,7 +98,7 @@ def init_db():
             Art_ID INT,
             FOREIGN KEY (User_ID) REFERENCES Users(User_ID),
             FOREIGN KEY (Art_ID) REFERENCES Arts(Art_ID)
-        );
+        )
     ''')
 
     c.execute('''
@@ -110,7 +111,7 @@ def init_db():
             Order_date DATETIME,
             status CHECK(status IN ('Сборка заказа', 'В пути', 'Отменен')),
             FOREIGN KEY (User_ID) REFERENCES Users(User_ID)
-        );
+        )
     ''')
 
     c.execute('''
@@ -120,24 +121,24 @@ def init_db():
             Art_ID INT,
             FOREIGN KEY (Order_ID) REFERENCES Orders(Order_ID),
             FOREIGN KEY (Art_ID) REFERENCES Arts(Art_ID)
-        );
+        )
     ''')
 
-init_db()
-
+    conn.commit()
+    conn.close()
 
 def convertToBinaryData(filename):
     try:
-        with open(filename, 'rb') as file:
+        file_path = os.path.join(BASE_DIR, 'static', 'images', filename)
+        with open(file_path, 'rb') as file:
             blobData = file.read()
         return blobData
     except FileNotFoundError:
-        print(f"Файл не найден: {filename}")
+        print(f"Файл не найден: {file_path}")
         return None
     except Exception as e:
         print(f"Ошибка при чтении файла: {e}")
         return None
-
 
 # Функция для вставки данных в таблицы
 def insertData(table_name, **kwargs):
@@ -168,9 +169,10 @@ def insertData(table_name, **kwargs):
         if conn:
             conn.close()
 
+# Инициализация базы данных
+init_db()
 
-
-
+# Вставка данных в таблицы
 insertData('Techniques', Technique_ID=1, Name='Холст, акрил')
 insertData('Techniques', Technique_ID=2, Name='Холст, масло')
 insertData('Techniques', Technique_ID=3, Name='Картон, масло')
@@ -203,305 +205,23 @@ insertData('Themes', Theme_ID=17, Name='Искусство')
 insertData('Themes', Theme_ID=18, Name='Рукоделье')
 
 # Таблица Городов
-insertData('Artists', Artist_ID=1, Name='Санкт-Петербург', ArtistPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/artists/питер.png', Birth_year=1703, 
-           Bio='Санкт-Петербург – русский портовый город на побережье Балтийского моря, который в течение двух веков служил столицей Российской империи. Он был основан в 1703 году Петром I, которому воздвигнут знаменитый памятник "Медный всадник".'
-           )
-insertData('Artists', Artist_ID=2, Name='Москва', ArtistPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/artists/москва.png', Birth_year=1147, 
-           Bio='Москва – столица России, многонациональный город на Москве-реке в западной части страны. В его историческом центре находится средневековая крепость Кремль – резиденция российского президента.'
-           )
-insertData('Artists', Artist_ID=3, Name='Казань', ArtistPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/artists/казань.png', Birth_year=1005, 
-           Bio='Казань – город на юго-западе России, расположенный на берегах Волги и Казанки. В столице полуавтономной Республики Татарстан находится древний кремль – крепость, известная своими музеями и святыми местами.'
-           )
-insertData('Artists', Artist_ID=4, Name='Челябинск', ArtistPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/artists/челябинск.png', Birth_year=1736, 
-           Bio='Челя́бинск — восьмой по численности населения город в Российской Федерации, административный центр Челябинской области, шестнадцатый по занимаемой площади городской округ.'
-           )
-insertData('Artists', Artist_ID=5, Name='Новосибирск', ArtistPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/artists/новосибирск.png', Birth_year=1893, 
-           Bio='Новосибирск – российский город на реке Обь в юго-восточной части Западно-Сибирской равнины. Благодаря строительству Транссибирской магистрали с XIX века город постоянно рос и развивался. Об этом напоминает первый железнодорожный мост через реку Обь, который существует и сегодня.'
-           )
+insertData('Artists', Artist_ID=1, Name='Санкт-Петербург', ArtistPhoto='питер.png', Birth_year=1703, 
+           Bio='Санкт-Петербург – русский портовый город на побережье Балтийского моря, который в течение двух веков служил столицей Российской империи. Он был основан в 1703 году Петром I, которому воздвигнут знаменитый памятник "Медный всадник".')
+insertData('Artists', Artist_ID=2, Name='Москва', ArtistPhoto='москва.png', Birth_year=1147, 
+           Bio='Москва – столица России, многонациональный город на Москве-реке в западной части страны. В его историческом центре находится средневековая крепость Кремль – резиденция российского президента.')
+insertData('Artists', Artist_ID=3, Name='Казань', ArtistPhoto='казань.png', Birth_year=1005, 
+           Bio='Казань – город на юго-западе России, расположенный на берегах Волги и Казанки. В столице полуавтономной Республики Татарстан находится древний кремль – крепость, известная своими музеями и святыми местами.')
+insertData('Artists', Artist_ID=4, Name='Челябинск', ArtistPhoto='челябинск.png', Birth_year=1736, 
+           Bio='Челя́бинск — восьмой по численности населения город в Российской Федерации, административный центр Челябинской области, шестнадцатый по занимаемой площади городской округ.')
+insertData('Artists', Artist_ID=5, Name='Новосибирск', ArtistPhoto='новосибирск.png', Birth_year=1893, 
+           Bio='Новосибирск – российский город на реке Обь в юго-восточной части Западно-Сибирской равнины. Благодаря строительству Транссибирской магистрали с XIX века город постоянно рос и развивался. Об этом напоминает первый железнодорожный мост через реку Обь, который существует и сегодня.')
 
 # Таблица Сувениров  
-insertData('Arts', Art_ID=2, Name='Браслет Питер', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/браслетпитер.webp', Price=129, Width=1,Height=120,  Artist_ID=1, Creation_year=2023, Technique=2, 
-           Description='', 
-           Sold=False, Framing='Подрамник')
+insertData('Arts', Art_ID=2, Name='Браслет Питер', ArtPhoto='браслетпитер.webp', Price=129, Width=1, Height=120, Artist_ID=1, Creation_year=2023, Technique=2, 
+           Description='', Sold=False, Framing='Подрамник')
 insertData('Arts_themes', Art_ID=2, Theme_ID=2)
 insertData('Arts_themes', Art_ID=2, Theme_ID=11)
 insertData('Arts_themes', Art_ID=2, Theme_ID=14)
-insertData('Arts_themes', Art_ID=13, Theme_ID=12)
-insertData('Arts', Art_ID=3, Name='Веер Санкт-Петербург', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/веерсанктпетербург.webp', Price=215, Width=1,Height=120,  Artist_ID=1, Creation_year=2024, Technique=2, 
-           Description='Теплые и качественные штаны, сделанные из прочных материалов', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=3, Theme_ID=2)
-insertData('Arts_themes', Art_ID=3, Theme_ID=11)
-insertData('Arts_themes', Art_ID=3, Theme_ID=14)
-insertData('Arts_themes', Art_ID=13, Theme_ID=12)
-insertData('Arts', Art_ID=11, Name='Брелок монета СПБ', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/брелокмонетаспб.webp', Price=199, Width=1,Height=120,  Artist_ID=1, Creation_year=2016, Technique=2, 
-           Description='Непромокаемая куртка, сшитая из гидрофобного материала', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=11, Theme_ID=2)
-insertData('Arts_themes', Art_ID=11, Theme_ID=3)
-insertData('Arts_themes', Art_ID=11, Theme_ID=11)
-insertData('Arts_themes', Art_ID=11, Theme_ID=14)
-insertData('Arts', Art_ID=12, Name='Кепка СПБ', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/кепкаспб.webp', Price=769, Width=1,Height=120,  Artist_ID=1, Creation_year=2021, Technique=2, 
-           Description='Отличные согревающие перчатки, которые не дадут вашим рукам замерзнуть зимой', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=12, Theme_ID=2)
-insertData('Arts_themes', Art_ID=12, Theme_ID=11)
-insertData('Arts_themes', Art_ID=12, Theme_ID=12)
-insertData('Arts_themes', Art_ID=12, Theme_ID=14)
-insertData('Arts', Art_ID=13, Name='Зеркальце', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/зеркальцеспб.webp', Price=249, Width=1,Height=120,  Artist_ID=1, Creation_year=2020, Technique=2, 
-           Description='Ботинки весенние - зимние', 
-           Sold=False, Framing='Подрамник, Багет, Авторское оформление')
-insertData('Arts_themes', Art_ID=13, Theme_ID=2)
-insertData('Arts_themes', Art_ID=13, Theme_ID=3)
-insertData('Arts_themes', Art_ID=13, Theme_ID=11)
-insertData('Arts_themes', Art_ID=13, Theme_ID=14)
-insertData('Arts_themes', Art_ID=13, Theme_ID=12)
-
-insertData('Arts', Art_ID=4, Name='Пепельница', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/пепельницаспб.webp', Price=329, Width=1,Height=120,  Artist_ID=1, Creation_year=2010, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=4, Theme_ID=2)
-insertData('Arts_themes', Art_ID=4, Theme_ID=10)
-insertData('Arts_themes', Art_ID=4, Theme_ID=11)
-
-insertData('Arts', Art_ID=5, Name='Гранитный камень', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/каменьспб.webp', Price=540, Width=1,Height=120,  Artist_ID=1, Creation_year=2016, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=5, Theme_ID=2)
-insertData('Arts_themes', Art_ID=5, Theme_ID=3)
-insertData('Arts_themes', Art_ID=5, Theme_ID=4)
-insertData('Arts_themes', Art_ID=5, Theme_ID=14)
-
-insertData('Arts', Art_ID=6, Name='Магнит колокольчик Мосты', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/магнитколокольчикспб.webp', Price=379, Width=1,Height=120,  Artist_ID=1, Creation_year=2011, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=6, Theme_ID=1)
-insertData('Arts_themes', Art_ID=6, Theme_ID=2)
-insertData('Arts_themes', Art_ID=6, Theme_ID=3)
-insertData('Arts_themes', Art_ID=6, Theme_ID=4)
-insertData('Arts_themes', Art_ID=6, Theme_ID=14)
-
-insertData('Arts', Art_ID=7, Name='Значок ГЭС-2', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/значокгэсмосква.jpg', Price=499, Width=1,Height=120,  Artist_ID=2, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=7, Theme_ID=2)
-insertData('Arts_themes', Art_ID=7, Theme_ID=4)
-insertData('Arts_themes', Art_ID=7, Theme_ID=12)
-
-insertData('Arts', Art_ID=8, Name='Футболка ХОМ10', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/футболкахом10москва.jpg', Price=2350, Width=1,Height=120,  Artist_ID=2, Creation_year=2023, Technique=1, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=8, Theme_ID=13)
-insertData('Arts_themes', Art_ID=8, Theme_ID=15)
-
-
-
-insertData('Arts', Art_ID=1, Name='Кружка ХОМ10', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/кружкахом10москва.jpg', Price=960, Width=1,Height=120,  Artist_ID=2, Creation_year=2023, Technique=2, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Багет')
-insertData('Arts_themes', Art_ID=1, Theme_ID=6)
-insertData('Arts_themes', Art_ID=1, Theme_ID=7)
-insertData('Arts_themes', Art_ID=1, Theme_ID=8)
-
-insertData('Arts', Art_ID=9, Name='Сумка СОМВОД', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/сумкасомводмосква.jpg', Price=1000, Width=1,Height=120, Artist_ID=2, Creation_year=2022, Technique=1, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник, Багет')
-insertData('Arts_themes', Art_ID=9, Theme_ID=6)
-insertData('Arts_themes', Art_ID=9, Theme_ID=7)
-insertData('Arts_themes', Art_ID=9, Theme_ID=9)
-
-insertData('Arts', Art_ID=10, Name='Записная книжка техника-молодежи', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/книжкамосква.png', Price=650, Width='Хлопок', Height=120,  Artist_ID=2, Creation_year=2021, Technique=1, 
-           Description='Нет описания', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=10, Theme_ID=1)
-insertData('Arts_themes', Art_ID=10, Theme_ID=11)
-insertData('Arts_themes', Art_ID=10, Theme_ID=14)
-
-insertData('Arts', Art_ID=14, Name='Обложка паспорта Футбол-Москва', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/обложкамосква.jpg', Price=180, Width=1,Height=120, Artist_ID=2, Creation_year=2024, Technique=2, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=14, Theme_ID=6)
-insertData('Arts_themes', Art_ID=14, Theme_ID=7)
-insertData('Arts_themes', Art_ID=14, Theme_ID=13)
-insertData('Arts', Art_ID=15, Name='Москвич 412', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/машинкамосква.jpg', Price=4900, Width='Хлопок', Height=120, Artist_ID=2, Creation_year=2022, Technique=2, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=15, Theme_ID=2)
-insertData('Arts_themes', Art_ID=15, Theme_ID=12)
-insertData('Arts_themes', Art_ID=15, Theme_ID=13)
-insertData('Arts_themes', Art_ID=15, Theme_ID=14)
-insertData('Arts', Art_ID=16, Name='Нашивка-Магнит', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/нашивкамосква.jpg', Price=270, Width='Хлопок', Height=120, Artist_ID=2, Creation_year=2023, Technique=2, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=15, Theme_ID=2)
-insertData('Arts_themes', Art_ID=15, Theme_ID=8)
-insertData('Arts_themes', Art_ID=15, Theme_ID=11)
-insertData('Arts_themes', Art_ID=15, Theme_ID=14)
-
-insertData('Arts', Art_ID=17, Name='Браслет Глаз Геонит', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/браслетказань.webp', Price=499, Width=1,Height=120,  Artist_ID=3, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=17, Theme_ID=2)
-insertData('Arts_themes', Art_ID=17, Theme_ID=14)
-insertData('Arts_themes', Art_ID=17, Theme_ID=12)
-insertData('Arts_themes', Art_ID=17, Theme_ID=3)
-
-insertData('Arts', Art_ID=18, Name='Брелок Якорь', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/брелокказань.webp', Price=499, Width=1,Height=120,  Artist_ID=3, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=18, Theme_ID=7)
-insertData('Arts_themes', Art_ID=18, Theme_ID=8)
-insertData('Arts_themes', Art_ID=18, Theme_ID=9)
-
-insertData('Arts', Art_ID=19, Name='Наперсток фарфоровый', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/наперстокказань.webp', Price=1499, Width=1,Height=120,  Artist_ID=3, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=19, Theme_ID=3)
-insertData('Arts_themes', Art_ID=19, Theme_ID=10)
-insertData('Arts_themes', Art_ID=19, Theme_ID=12)
-
-insertData('Arts', Art_ID=20, Name='Булава деревянная', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/булаваказань.webp', Price=3499, Width=1,Height=155,  Artist_ID=3, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=20, Theme_ID=1)
-insertData('Arts_themes', Art_ID=20, Theme_ID=14)
-insertData('Arts_themes', Art_ID=20, Theme_ID=16)
-
-insertData('Arts', Art_ID=21, Name='Блокнот большой ткань', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/блокнотказань.webp', Price=699, Width=1,Height=20,  Artist_ID=3, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=21, Theme_ID=12)
-insertData('Arts_themes', Art_ID=21, Theme_ID=4)
-insertData('Arts_themes', Art_ID=21, Theme_ID=9)
-
-insertData('Arts', Art_ID=22, Name='Кружечка фарфор', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/кружкаказань.webp', Price=599, Width=1,Height=120,  Artist_ID=3, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=22, Theme_ID=10)
-insertData('Arts_themes', Art_ID=22, Theme_ID=1)
-insertData('Arts_themes', Art_ID=22, Theme_ID=3)
-
-insertData('Arts', Art_ID=23, Name='Набор садака с Аятуль Курси L', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/наборказань.webp', Price=4999, Width=1,Height=120,  Artist_ID=3, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=23, Theme_ID=1)
-insertData('Arts_themes', Art_ID=23, Theme_ID=2)
-insertData('Arts_themes', Art_ID=23, Theme_ID=3)
-
-insertData('Arts', Art_ID=24, Name='Магнит Ангел-колокольчик', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/магнитказань.webp', Price=499, Width=1,Height=120,  Artist_ID=3, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=24, Theme_ID=6)
-insertData('Arts_themes', Art_ID=24, Theme_ID=7)
-insertData('Arts_themes', Art_ID=24, Theme_ID=13)
-
-insertData('Arts', Art_ID=25, Name='Бюст Пётр I', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/бюстчелябинск.jpeg', Price=7099, Width=1,Height=140,  Artist_ID=4, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=25, Theme_ID=9)
-insertData('Arts_themes', Art_ID=25, Theme_ID=10)
-insertData('Arts_themes', Art_ID=25, Theme_ID=12)
-
-insertData('Arts', Art_ID=26, Name='Вазон Цезарь', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/вазончелябинск.jpeg', Price=3000, Width=1,Height=150,  Artist_ID=4, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=26, Theme_ID=2)
-insertData('Arts_themes', Art_ID=26, Theme_ID=4)
-insertData('Arts_themes', Art_ID=26, Theme_ID=12)
-insertData('Arts', Art_ID=27, Name='Колокольчик "Дракоша с евро"', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/колокольчикчелябинск.jpeg', Price=899, Width=1,Height=120,  Artist_ID=4, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=27, Theme_ID=6)
-insertData('Arts_themes', Art_ID=27, Theme_ID=7)
-insertData('Arts_themes', Art_ID=27, Theme_ID=8)
-
-insertData('Arts', Art_ID=28, Name='Панно настольное под знак', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/панночелябинск.jpeg', Price=799, Width=1,Height=120,  Artist_ID=4, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=28, Theme_ID=9)
-insertData('Arts_themes', Art_ID=28, Theme_ID=10)
-insertData('Arts_themes', Art_ID=28, Theme_ID=11)
-
-insertData('Arts', Art_ID=29, Name='Пепельница Морж', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/пепельницачелябинск.jpeg', Price=999, Width=1,Height=60,  Artist_ID=4, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=29, Theme_ID=12)
-insertData('Arts_themes', Art_ID=29, Theme_ID=13)
-insertData('Arts_themes', Art_ID=29, Theme_ID=14)
-
-insertData('Arts', Art_ID=30, Name='Письменный прибор Дракон', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/приборчелябинск.jpeg', Price=999, Width=1,Height=80,  Artist_ID=4, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=30, Theme_ID=15)
-insertData('Arts_themes', Art_ID=30, Theme_ID=16)
-insertData('Arts_themes', Art_ID=30, Theme_ID=1)
-
-insertData('Arts', Art_ID=31, Name='Подсвечник Дракончик', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/подсвечникчелябинск.jpeg', Price=1999, Width=1,Height=50,  Artist_ID=4, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=31, Theme_ID=2)
-insertData('Arts_themes', Art_ID=31, Theme_ID=4)
-insertData('Arts_themes', Art_ID=31, Theme_ID=5)
-
-insertData('Arts', Art_ID=32, Name='Медаль литьевая 50 лет', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/медальчелябинск.jpg', Price=1000, Width=1,Height=65,  Artist_ID=4, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=32, Theme_ID=6)
-insertData('Arts_themes', Art_ID=32, Theme_ID=7)
-insertData('Arts_themes', Art_ID=32, Theme_ID=8)
-
-insertData('Arts', Art_ID=33, Name='Пивная кружка стеклянная "Новосибирск"', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/кружкановосибирск.png', Price=600, Width=1,Height=65,  Artist_ID=5, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=33, Theme_ID=12)
-insertData('Arts_themes', Art_ID=33, Theme_ID=11)
-insertData('Arts_themes', Art_ID=33, Theme_ID=7)
-
-insertData('Arts', Art_ID=34, Name='Колокольчик керамический Новосибирск"', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/колокольчикновосибирск.png', Price=550, Width=1,Height=65,  Artist_ID=5, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=34, Theme_ID=3)
-insertData('Arts_themes', Art_ID=34, Theme_ID=6)
-insertData('Arts_themes', Art_ID=34, Theme_ID=9)
-
-insertData('Arts', Art_ID=35, Name='Панно настенное "Новосибирск""', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/панноновосибирск.jpg', Price=200, Width=1,Height=65,  Artist_ID=5, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=35, Theme_ID=1)
-insertData('Arts_themes', Art_ID=35, Theme_ID=8)
-insertData('Arts_themes', Art_ID=35, Theme_ID=12)
-
-insertData('Arts', Art_ID=36, Name='Ложка сувенирная металлическая "Новосибирск"', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/ложкановосибирск.png', Price=700, Width=1,Height=65,  Artist_ID=5, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=36, Theme_ID=14)
-insertData('Arts_themes', Art_ID=36, Theme_ID=4)
-insertData('Arts_themes', Art_ID=36, Theme_ID=15)
-
-insertData('Arts', Art_ID=37, Name='Тарелка декоративная "Новосибирск"', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/тарелкановосибирск.png', Price=800, Width=1,Height=25,  Artist_ID=5, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=37, Theme_ID=9)
-insertData('Arts_themes', Art_ID=37, Theme_ID=4)
-insertData('Arts_themes', Art_ID=37, Theme_ID=11)
-
-insertData('Arts', Art_ID=38, Name='Сувенирная монета "Новосибирск"', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/монетановосибирск.jpg', Price=600, Width=1,Height=65,  Artist_ID=5, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=38, Theme_ID=12)
-insertData('Arts_themes', Art_ID=38, Theme_ID=8)
-insertData('Arts_themes', Art_ID=38, Theme_ID=9)
-
-insertData('Arts', Art_ID=39, Name='Зажигалка бензиновая "Новосибирск"', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/зажигалкановосибирск.png', Price=900, Width=1,Height=15,  Artist_ID=5, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=39, Theme_ID=1)
-insertData('Arts_themes', Art_ID=39, Theme_ID=4)
-insertData('Arts_themes', Art_ID=39, Theme_ID=2)
-
-insertData('Arts', Art_ID=40, Name='Брелок из бересты на деревянной подложке "Новосибирск"', ArtPhoto='C:/Users/kkolu/Desktop/дипломы/marketplace/arts/брелокновосибирск.png', Price=200, Width=1,Height=65,  Artist_ID=5, Creation_year=2018, Technique=5, 
-           Description='Нет описания.', 
-           Sold=False, Framing='Подрамник')
-insertData('Arts_themes', Art_ID=40, Theme_ID=3)
-insertData('Arts_themes', Art_ID=40, Theme_ID=5)
-insertData('Arts_themes', Art_ID=40, Theme_ID=6)
+insertData('Arts_themes', Art_ID=2, Theme_ID=12)
+insertData('Arts', Art_ID=3, Name='Веер Санкт-Петербург', ArtPhoto='веерсанктпетербург.webp', Price=215, Width=1, Height=120, Artist_ID=1, Creation_year=2024, Technique=2, 
+           Description='Т')
